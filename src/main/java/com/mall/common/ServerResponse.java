@@ -10,10 +10,13 @@ import java.io.Serializable;
 public class ServerResponse<T> implements Serializable {
     @Getter
     private int status;
+    //返回状态码,0为success,1为error
     @Getter
     private String msg;
+    //返回消息
     @Getter
     private T data;
+    //返回具体泛型数据
 
     private ServerResponse(int status) {
         this.status = status;
@@ -42,29 +45,36 @@ public class ServerResponse<T> implements Serializable {
 
     public static <T> ServerResponse<T> createBySuccess() {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode());
+        //{status:number}
     }
 
     public static <T> ServerResponse<T> createBySuccessMessage(String msg) {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), msg);
+        //{status:number,msg:string}
     }
 
     public static <T> ServerResponse<T> createBySuccess(T data) {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), data);
+        //{status:number,data:T}
     }
 
     public static <T> ServerResponse<T> createBySuccess(String msg, T data) {
         return new ServerResponse<T>(ResponseCode.SUCCESS.getCode(), msg, data);
+        //{status:number,msg:string,data:T}
     }
 
     public static <T> ServerResponse<T> createByError() {
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(), ResponseCode.ERROR.getDesc());
+        //{status:number,msg:string}
     }
 
     public static <T> ServerResponse<T> createByErrorMessage(String errorMsg) {
         return new ServerResponse<T>(ResponseCode.ERROR.getCode(), errorMsg);
+        //{status:number,msg:string}
     }
 
     public static <T> ServerResponse<T> createByErrorCodeMessage(int errorCode, String errorMsg) {
         return new ServerResponse<T>(errorCode, errorMsg);
+        //{status:number,msg:string,data:T}
     }
 }
