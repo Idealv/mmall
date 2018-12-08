@@ -3,8 +3,11 @@ package com.mall.common;
 import lombok.Getter;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.junit.Test;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ServerResponse<T> implements Serializable {
@@ -26,6 +29,7 @@ public class ServerResponse<T> implements Serializable {
         this.status = status;
         this.msg = msg;
         this.data = data;
+        int a[]=new int[5];
     }
 
     private ServerResponse(int status, T data) {
