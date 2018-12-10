@@ -22,7 +22,7 @@ public class PropertiesUtil {
             logger.error("配置文件读取异常",e);
         }
     }
-
+    //8088
     public static String getPropery(String key){
         String value = properties.getProperty(key.trim());
         if (StringUtils.isBlank(value)){

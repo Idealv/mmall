@@ -56,6 +56,7 @@ public class ShippingServiceImpl implements IShippingService {
         return ServerResponse.createBySuccess("查询地址成功", shipping);
     }
 
+
     @Override
     public ServerResponse<PageInfo> list(Integer userId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
