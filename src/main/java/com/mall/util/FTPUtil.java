@@ -83,9 +83,9 @@ public class FTPUtil {
         FTPClient ftpClient = new FTPClient();
         boolean isSuccess=false;
         try {
-            ftpClient.connect("172.29.51.110");
+            ftpClient.connect("172.19.56.86");
             isSuccess=ftpClient.login("ideal","ideal");
-            System.out.println(isSuccess);
+            System.out.println("isSuccess = " + isSuccess);
         } catch (IOException e) {
             e.printStackTrace();
         }

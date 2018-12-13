@@ -118,4 +118,32 @@ public class Const {
             throw new RuntimeException("没有找到对应的枚举项");
         }
     }
+
+    public interface AlipayCallback{
+        String TRADE_SUCCESS = "TRADE_SUCCESS";
+        String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
+    }
+
+    public enum PayPlatform{
+        ALIPAY(1, "支付宝");
+
+        private Integer code;
+        private String value;
+
+        PayPlatform(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

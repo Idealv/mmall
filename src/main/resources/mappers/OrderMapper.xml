@@ -199,7 +199,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByOrderNoUserId" parameterType="map" resultMap="BaseResultMap">
-    SELECT ;
+    SELECT
     <include refid="Base_Column_List"/>
     FROM mmall_order
     WHERE user_id=#{userId}
