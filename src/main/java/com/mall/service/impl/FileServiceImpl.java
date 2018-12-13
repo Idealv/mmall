@@ -16,10 +16,19 @@ import java.util.UUID;
 @Service("iFileService")
 public class FileServiceImpl implements IFileService {
     private Logger logger= LoggerFactory.getLogger(FileServiceImpl.class);
-    public String upload(MultipartFile file,String path){
+
+    /**
+     * @param file
+     * @param path 暂时保存文件的文件路径,
+     * @return
+     */
+    public String upload(MultipartFile file, String path) {
+        //上传文件原始文件名
         String filename = file.getOriginalFilename();
+        //扩展名
         String fileExtentionName = filename.substring(filename.lastIndexOf(".") + 1);
-        String uploadFileName= UUID.randomUUID().toString()+"."+fileExtentionName;
+        //保存文件名:UUID生成任意字符串+扩展名
+        String uploadFileName = UUID.randomUUID().toString() + "." + fileExtentionName;
         logger.info("文件上传开始,上传文件名:{},上传路径:{},新文件名:{}", filename, path, uploadFileName);
 
         File fileDir = new File(path);
