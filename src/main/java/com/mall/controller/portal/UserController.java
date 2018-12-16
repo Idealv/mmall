@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.mall.util.RedisPoolUtil;
+import com.mall.util.RedisShardedPoolUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +34,8 @@ public class UserController {
             //todo 使用jwt实现记住用户
             //session.setAttribute(Const.CURRENT_USER, response.getData());
             CookieUtil.writeLoginToken(servletResponse, session.getId());
-            RedisPoolUtil.setEx(session.getId(),
+            //redis中保存的session失效时间为30分钟
+            RedisShardedPoolUtil.setEx(session.getId(),
                     JsonUtil.stringify(response.getData()),
                     Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
@@ -46,7 +47,7 @@ public class UserController {
     public ServerResponse<String> logout(HttpServletRequest request,HttpServletResponse response) {
         String loginToken = CookieUtil.readLoginToken(request);
         CookieUtil.removeLoginToken(request, response);
-        RedisPoolUtil.del(loginToken);
+        RedisShardedPoolUtil.del(loginToken);
         return ServerResponse.createBySuccess();
     }
 
@@ -116,7 +117,7 @@ public class UserController {
             ServerResponse<User> response = iUserService.updateInformation(u);
             if (response.isSuccess()) {
                 String loginToken = CookieUtil.readLoginToken(request);
-                RedisPoolUtil.setEx(loginToken,
+                RedisShardedPoolUtil.setEx(loginToken,
                         JsonUtil.stringify(response.getData()),
                         Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
             }

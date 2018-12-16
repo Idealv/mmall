@@ -3,14 +3,13 @@ package com.mall.service.impl;
 import com.mall.common.Const;
 import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
-import com.mall.common.TokenCache;
 import com.mall.dao.UserMapper;
 import com.mall.pojo.User;
 import com.mall.service.IUserService;
 import com.mall.util.CookieUtil;
 import com.mall.util.JsonUtil;
 import com.mall.util.MD5Util;
-import com.mall.util.RedisPoolUtil;
+import com.mall.util.RedisShardedPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,7 +103,7 @@ public class UserServiceImpl implements IUserService {
             //返回token原因:防止用户横向越权,只有username,question,answer全部正确才返回token
             String forgetToken = UUID.randomUUID().toString();
             //设置过期时间为12小时
-            RedisPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
+            RedisShardedPoolUtil.setEx(Const.TOKEN_PREFIX + username, forgetToken, 60 * 60 * 12);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
@@ -119,7 +118,7 @@ public class UserServiceImpl implements IUserService {
         if (response.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token = RedisPoolUtil.get(Const.TOKEN_PREFIX + username);
+        String token = RedisShardedPoolUtil.get(Const.TOKEN_PREFIX + username);
         if (StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token无效或已过期");
         }
@@ -161,7 +160,6 @@ public class UserServiceImpl implements IUserService {
         updateUser.setPassword(u.getPhone());
         updateUser.setQuestion(u.getQuestion());
         updateUser.setAnswer(u.getAnswer());
-
         int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
         if (updateCount>0){
             return ServerResponse.createBySuccess("用户信息更新成功",updateUser);
@@ -203,7 +201,7 @@ public class UserServiceImpl implements IUserService {
         if (StringUtils.isEmpty(loginToken)){
             return alertNoLogin();
         }
-        String userJson = RedisPoolUtil.get(loginToken);
+        String userJson = RedisShardedPoolUtil.get(loginToken);
         User u = JsonUtil.parse(userJson, User.class);
         if (u == null) {
             return alertNoLogin();
