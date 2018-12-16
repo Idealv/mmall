@@ -6,44 +6,58 @@ import com.sun.xml.internal.ws.policy.spi.PolicyAssertionValidator;
 import java.util.Set;
 
 public class Const {
+    //const variable
     public static final String CURRENT_USER = "CURRENT_USER";
     public static final String USERNAME = "username";
     public static final String EMAIL = "email";
+    public static final String TOKEN_PREFIX="token_";
 
-    public interface Cart{
-        int CHECKED=1;
-        int UN_CHECKED=0;
+
+    //interface
+    public interface Cart {
+        int CHECKED = 1;
+        int UN_CHECKED = 0;
 
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
         String LIMIT_NUM_FAILED = "LIMIT_NUM_FAILED";
     }
 
-    public interface RedisCacheExtime{
+    public interface RedisCacheExtime {
         Integer REDIS_SESSION_EXTIME = 60 * 30;//30 minute
     }
 
-    public interface Role{
-        int ROLE_CUSTOMER=0;
-        int ROLE_ADMIN=1;
+    public interface Role {
+        int ROLE_CUSTOMER = 0;
+        int ROLE_ADMIN = 1;
     }
 
-    public interface ProductListOrderby{
-        Set<String> PRICE_ASC_DESC= Sets.newHashSet("price_desc","price_asc");
+    public interface ProductListOrderby {
+        Set<String> PRICE_ASC_DESC = Sets.newHashSet("price_desc", "price_asc");
     }
 
-    public enum OrderStatusEnum{
-        CANCELED(0,"已取消"),
-        NO_PAY(10,"未支付"),
-        PAID(20,"已付款"),
-        SHIPPED(40,"已发货"),
-        ORDER_SUCCESS(50,"订单完成"),
-        ORDER_CLOSE(60,"订单关闭");
+    public interface AlipayCallback {
+        String TRADE_SUCCESS = "TRADE_SUCCESS";
+        String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
+
+        String RESPONSE_SUCCESS = "success";
+        String RESPONSE_FAILED = "failed";
+    }
+
+    //enum
+    public enum OrderStatusEnum {
+        CANCELED(0, "已取消"),
+        NO_PAY(10, "未支付"),
+        PAID(20, "已付款"),
+        SHIPPED(40, "已发货"),
+        ORDER_SUCCESS(50, "订单完成"),
+        ORDER_CLOSE(60, "订单关闭");
 
 
-        OrderStatusEnum(int code,String value){
+        OrderStatusEnum(int code, String value) {
             this.code = code;
             this.value = value;
         }
+
         private String value;
         private int code;
 
@@ -55,9 +69,9 @@ public class Const {
             return code;
         }
 
-        public static String getDescByCode(int code){
-            for(OrderStatusEnum orderStatusEnum : values()){
-                if(orderStatusEnum.getCode() == code){
+        public static String getDescByCode(int code) {
+            for (OrderStatusEnum orderStatusEnum : values()) {
+                if (orderStatusEnum.getCode() == code) {
                     return orderStatusEnum.getValue();
                 }
             }
@@ -65,8 +79,8 @@ public class Const {
         }
     }
 
-    public enum PRODUCT_STATUS{
-        ON_SALE(1,"on_sale");
+    public enum PRODUCT_STATUS {
+        ON_SALE(1, "on_sale");
 
         private Integer code;
         private String value;
@@ -84,9 +98,9 @@ public class Const {
             return value;
         }
 
-        public String getDescByCode(Integer code){
-            for (PRODUCT_STATUS product_status:values()) {
-                if (product_status.getCode()==code){
+        public String getDescByCode(Integer code) {
+            for (PRODUCT_STATUS product_status : values()) {
+                if (product_status.getCode() == code) {
                     return product_status.getValue();
                 }
             }
@@ -94,7 +108,7 @@ public class Const {
         }
     }
 
-    public enum PaymentType{
+    public enum PaymentType {
         ONLINE_PAY(1, "在线支付");
 
         private Integer code;
@@ -113,9 +127,9 @@ public class Const {
             return value;
         }
 
-        public static String getDescByCode(Integer code){
-            for (PaymentType paymentType:values()) {
-                if (paymentType.getCode()==code){
+        public static String getDescByCode(Integer code) {
+            for (PaymentType paymentType : values()) {
+                if (paymentType.getCode() == code) {
                     return paymentType.getValue();
                 }
             }
@@ -123,15 +137,7 @@ public class Const {
         }
     }
 
-    public interface AlipayCallback{
-        String TRADE_SUCCESS = "TRADE_SUCCESS";
-        String WAIT_BUYER_PAY = "WAIT_BUYER_PAY";
-
-        String RESPONSE_SUCCESS = "success";
-        String RESPONSE_FAILED = "failed";
-    }
-
-    public enum PayPlatform{
+    public enum PayPlatform {
         ALIPAY(1, "支付宝");
 
         private Integer code;
