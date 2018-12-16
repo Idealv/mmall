@@ -39,118 +39,94 @@ public class ProductManageController {
 
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse<String> productSave(HttpSession session, Product product) {
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+    public ServerResponse<String> productSave(HttpServletRequest request, Product product) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             return iProductService.saveOrUpdateProduct(product);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
     }
 
 
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse<String> setSaleStatus(HttpSession session, Integer productId, Integer status) {
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+    public ServerResponse<String> setSaleStatus(HttpServletRequest request, Integer productId, Integer status) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             return iProductService.updateSaleStatus(productId, status);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
     }
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse<ProductDetailVO> getDetail(HttpSession session, Integer productId) {
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+    public ServerResponse<ProductDetailVO> getDetail(HttpServletRequest request, Integer productId) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             return iProductService.manageProductDetail(productId);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
     }
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse<PageInfo> getList(HttpSession session,
+    public ServerResponse<PageInfo> getList(HttpServletRequest request,
                                             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             return iProductService.getProductList(pageNum, pageSize);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
     }
 
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse<PageInfo> search(HttpSession session,
+    public ServerResponse<PageInfo> search(HttpServletRequest request,
                                             String productName,int productId,
                                             @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                             @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             return iProductService.searchProduct(productName, productId, pageNum, pageSize);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
     }
 
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session,
-                                 @RequestParam(value = "upload_file",required = false)MultipartFile file,
+    public ServerResponse upload(@RequestParam(value = "upload_file",required = false)MultipartFile file,
                                  HttpServletRequest request) {
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录");
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()) {
             String path = request.getSession().getServletContext().getRealPath("upload");
             String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getPropery("ftp.server.http.prefix") + targetFileName;
-
             Map map = Maps.newHashMap();
             map.put("uri", targetFileName);
             map.put("url", url);
             return ServerResponse.createBySuccess(map);
-        } else {
-            return ServerResponse.createByErrorMessage("无权限,需管理员权限");
         }
+        return serverResponse;
+
     }
 
     @RequestMapping("richText_img_upload.do")
     @ResponseBody
-    public Map richTextImgUpload(HttpSession session,
-                                 @RequestParam(value = "upload_file",required = false) MultipartFile file,
+    public Map richTextImgUpload(@RequestParam(value = "upload_file",required = false) MultipartFile file,
                                  HttpServletRequest request,
                                  HttpServletResponse response) {
         Map resultMap=Maps.newHashMap();
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        //{success:boolean,msg:string,file_path:string}
-        if (u == null) {
-            resultMap.put("success", false);
-            resultMap.put("msg", "请登录");
-            return resultMap;
-        }
-        if (iUserService.checkAdminRole(u).isSuccess()) {
+        ServerResponse serverResponse = iUserService.checkRole(request);
+        if (serverResponse.isSuccess()){
+            User u = (User) serverResponse.getData();
+            //{success:boolean,msg:string,file_path:string}
+            if (u == null) {
+                resultMap.put("success", false);
+                resultMap.put("msg", "请登录");
+                return resultMap;
+            }
+            //upload
             String path = request.getSession().getServletContext().getRealPath("upload");
             String targetFileName = iFileService.upload(file, path);
 
@@ -171,7 +147,7 @@ public class ProductManageController {
             resultMap.put("file_path", url);
             response.setHeader("Access-Control-Allow-Headers","X-File-Name ");
             return resultMap;
-        } else {
+        }else{
             resultMap.put("success", false);
             resultMap.put("msg", "需要管理员权限");
             return resultMap;

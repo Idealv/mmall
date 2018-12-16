@@ -1,16 +1,21 @@
 package com.mall.service.impl;
 
 import com.mall.common.Const;
+import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
 import com.mall.common.TokenCache;
 import com.mall.dao.UserMapper;
 import com.mall.pojo.User;
 import com.mall.service.IUserService;
+import com.mall.util.CookieUtil;
+import com.mall.util.JsonUtil;
 import com.mall.util.MD5Util;
+import com.mall.util.RedisPoolUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @Service("iUserService")
@@ -179,5 +184,45 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse alertNoLogin() {
+        return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
+                ResponseCode.NEED_LOGIN.getDesc());
+    }
+
+    /**
+     * @param request 用于获取cookie
+     * @return 若没有登录则直接返回{status:1,msg:"ERROR"},登录则返回{status:0,data:User}
+     */
+    @Override
+    public ServerResponse checkLogin(HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (StringUtils.isEmpty(loginToken)){
+            return alertNoLogin();
+        }
+        String userJson = RedisPoolUtil.get(loginToken);
+        User u = JsonUtil.parse(userJson, User.class);
+        if (u == null) {
+            return alertNoLogin();
+        }
+        return ServerResponse.createBySuccess(u);
+    }
+
+    @Override
+    public ServerResponse checkRole(HttpServletRequest request) {
+        ServerResponse<User> response = checkLogin(request);
+        User user = response.getData();
+        if (response.isSuccess()){
+            if (response.isSuccess()) {
+                if (checkAdminRole(user).isSuccess()) {
+                    return ServerResponse.createBySuccess(user);
+                }else{
+                    return ServerResponse.createByErrorMessage("无权限,请获取管理员权限");
+                }
+            }
+        }
+        return alertNoLogin();
     }
 }

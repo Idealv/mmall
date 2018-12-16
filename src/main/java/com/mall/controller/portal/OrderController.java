@@ -5,10 +5,10 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.demo.trade.config.Configs;
 import com.google.common.collect.Maps;
 import com.mall.common.Const;
-import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
 import com.mall.pojo.User;
 import com.mall.service.IOrderService;
+import com.mall.service.IUserService;
 import com.mall.vo.OrderVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,18 +29,20 @@ public class OrderController {
     private Logger logger = LoggerFactory.getLogger(OrderController.class);
     @Autowired
     private IOrderService iOrderService;
+    @Autowired
+    private IUserService iUserService;
 
     //alipay
     @RequestMapping("pay.do")
     @ResponseBody
-    public ServerResponse<OrderVO> pay(HttpSession session, long orderNo, HttpServletRequest request){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
-        }
+    public ServerResponse<OrderVO> pay(long orderNo, HttpServletRequest request){
+        ServerResponse serverResponse = iUserService.checkLogin(request);
         String path = request.getSession().getServletContext().getRealPath("upload");
-        return iOrderService.pay(u.getId(), orderNo, path);
+        if (serverResponse.isSuccess()){
+            User u = (User) serverResponse.getData();
+            return iOrderService.pay(u.getId(), orderNo, path);
+        }
+        return serverResponse;
     }
 
     @RequestMapping("alipay_callback.do")
@@ -85,15 +87,14 @@ public class OrderController {
 
     @RequestMapping("query_order_pay_status.do")
     @ResponseBody
-    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Integer orderNo){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
-        }
-        ServerResponse serverResponse = iOrderService.queryOrderPayStatus(u.getId(), orderNo);
-        if (serverResponse.isSuccess()){
-            return ServerResponse.createBySuccess(true);
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest request, Integer orderNo){
+        ServerResponse userRes = iUserService.checkLogin(request);
+        if (userRes.isSuccess()){
+            User u = (User) userRes.getData();
+            ServerResponse orderRes = iOrderService.queryOrderPayStatus(u.getId(), orderNo);
+            if (orderRes.isSuccess()){
+                return ServerResponse.createBySuccess(true);
+            }
         }
         return ServerResponse.createBySuccess(false);
     }
@@ -101,58 +102,58 @@ public class OrderController {
     //user order
     @RequestMapping("create.do")
     @ResponseBody
-    public ServerResponse<OrderVO> create(HttpSession session, Integer shippingId){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<OrderVO> create(HttpServletRequest request, Integer shippingId) {
+        ServerResponse serverResponse = iUserService.checkLogin(request);
+        if (serverResponse.isSuccess()){
+            User u= (User) serverResponse.getData();
+            return iOrderService.createOrder(u.getId(), shippingId);
         }
-        return iOrderService.createOrder(u.getId(), shippingId);
+        return serverResponse;
     }
 
     @RequestMapping("get_order_cart_product.do")
     @ResponseBody
-    public ServerResponse<String> getOrderCartProduct(HttpSession session){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<String> getOrderCartProduct(HttpServletRequest request){
+        ServerResponse serverResponse = iUserService.checkLogin(request);
+        if (serverResponse.isSuccess()){
+            User u= (User) serverResponse.getData();
+            return iOrderService.getOrderCartProduct(u.getId());
         }
-        return iOrderService.getOrderCartProduct(u.getId());
+        return serverResponse;
     }
 
     @RequestMapping("cancel.do")
     @ResponseBody
-    public ServerResponse<String> cancel(HttpSession session,long orderNo){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse<String> cancel(HttpServletRequest request,long orderNo){
+        ServerResponse serverResponse = iUserService.checkLogin(request);
+        if (serverResponse.isSuccess()) {
+            User u= (User) serverResponse.getData();
+            return iOrderService.cancelOrder(u.getId(), orderNo);
         }
-        return iOrderService.cancelOrder(u.getId(), orderNo);
+        return serverResponse;
     }
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse detail(HttpSession session,long orderNo){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+    public ServerResponse detail(HttpServletRequest request,long orderNo){
+        ServerResponse serverResponse = iUserService.checkLogin(request);
+        if (serverResponse.isSuccess()) {
+            User u= (User) serverResponse.getData();
+            return iOrderService.getDetail(u.getId(), orderNo);
         }
-        return iOrderService.getDetail(u.getId(), orderNo);
+        return serverResponse;
     }
 
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse list(HttpSession session,
+    public ServerResponse list(HttpServletRequest request,
                                @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,
                                @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
-        User u = (User) session.getAttribute(Const.CURRENT_USER);
-        if (u==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),
-                    ResponseCode.NEED_LOGIN.getDesc());
+        ServerResponse serverResponse = iUserService.checkLogin(request);
+        if (serverResponse.isSuccess()) {
+            User u= (User) serverResponse.getData();
+            return iOrderService.getOrderList(u.getId(), pageNum, pageSize);
         }
-        return iOrderService.getOrderList(u.getId(), pageNum, pageSize);
+        return serverResponse;
     }
 }
