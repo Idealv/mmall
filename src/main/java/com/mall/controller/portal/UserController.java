@@ -5,11 +5,13 @@ import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
 import com.mall.pojo.User;
 import com.mall.service.IUserService;
+import com.mall.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.mall.util.RedisPoolUtil;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,7 +29,11 @@ public class UserController {
             //session只保存本次会话消息,jsessionid保存在的cookie在关闭浏览器后销毁，若要记住用户
             //需要使用token
             //todo 使用jwt实现记住用户
-            session.setAttribute(Const.CURRENT_USER, response.getData());
+            //session.setAttribute(Const.CURRENT_USER, response.getData());
+            //A3574D95D9579B826FBAA20C952AEA27
+            RedisPoolUtil.setEx(session.getId(),
+                    JsonUtil.stringify(response.getData()),
+                    Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return response;
     }

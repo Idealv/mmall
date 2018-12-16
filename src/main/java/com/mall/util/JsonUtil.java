@@ -1,5 +1,6 @@
 package com.mall.util;
 
+import com.google.common.collect.Lists;
 import com.mall.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -7,9 +8,12 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.type.JavaType;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Slf4j
 public class JsonUtil {
@@ -53,12 +57,45 @@ public class JsonUtil {
         }
     }
 
+    public static <T> T parse(String jsonStr, TypeReference<T> typeReference){
+        if (StringUtils.isEmpty(jsonStr)||typeReference==null){
+            return null;
+        }
+        try {
+            return (T)(typeReference.getType().equals(String.class) ?
+                    (T) jsonStr:
+                    objectMapper.readValue(jsonStr, typeReference));
+        } catch (IOException e) {
+            log.warn("Parse string to obj error", e);
+            return null;
+        }
+    }
+
+    public static <T> T parse(String jsonStr, Class<?> collectionClass, Class<?>... elementClasses) {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
+        try {
+            return objectMapper.readValue(jsonStr, javaType);
+        } catch (IOException e) {
+            log.warn("Parse string to obj error", e);
+            return null;
+        }
+    }
+
     public static void main(String[] args) {
-        User user = new User();
-        user.setUsername("xiaoming");
-        user.setPhone("13812345678");
-        String userStr = stringify(user);
-        User u = parse(userStr, User.class);
-        System.out.println(u.getUsername());
+        User u1 = new User();
+        u1.setUsername("xiaoming");
+        u1.setPhone("13812345678");
+        User u2 = new User();
+        u2.setUsername("damao");
+        u2.setPhone("13887654321");
+        List<User> userList = Lists.newArrayList();
+        userList.add(u1);
+        userList.add(u2);
+        String s = stringify(userList);
+        List<User> userList1=parse(s, new TypeReference<List<User>>() {
+        });
+        User user = userList1.get(0);
+        System.out.println("user.getN = " + user.getUsername());
+
     }
 }

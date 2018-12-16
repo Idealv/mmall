@@ -2,7 +2,6 @@ package com.mall.util;
 
 import com.mall.common.RedisPool;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import redis.clients.jedis.Jedis;
 
 @Slf4j

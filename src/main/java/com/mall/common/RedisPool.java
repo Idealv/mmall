@@ -29,7 +29,7 @@ public class RedisPool {
         config.setMinIdle(minIdle);
         config.setTestOnBorrow(testonBorrow);
         config.setTestOnReturn(testonReturn);
-        //无可用资源(连接)后阻塞
+        //无可用资源(连接)后阻塞,防止报错
         config.setBlockWhenExhausted(true);
 
         pool = new JedisPool(config, ip, port, 1000 * 2);

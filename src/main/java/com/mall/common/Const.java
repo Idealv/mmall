@@ -18,6 +18,10 @@ public class Const {
         String LIMIT_NUM_FAILED = "LIMIT_NUM_FAILED";
     }
 
+    public interface RedisCacheExtime{
+        Integer REDIS_SESSION_EXTIME = 60 * 30;//30 minute
+    }
+
     public interface Role{
         int ROLE_CUSTOMER=0;
         int ROLE_ADMIN=1;
