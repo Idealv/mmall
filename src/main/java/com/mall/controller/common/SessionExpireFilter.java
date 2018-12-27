@@ -24,10 +24,12 @@ public class SessionExpireFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        //从cookie中读出loginToken
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isNotEmpty(loginToken)){
             String userJson = RedisShardedPoolUtil.get(loginToken);
             User u = JsonUtil.parse(userJson, User.class);
+            //若从session中取出用户信息,则已登录,重置过期时间
             if (u!=null){
                 RedisShardedPoolUtil.expire(loginToken, Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
             }
