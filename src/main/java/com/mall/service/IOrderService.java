@@ -30,5 +30,7 @@ public interface IOrderService {
 
     ServerResponse aliCallback(Map<String,String> params);
 
-    ServerResponse queryOrderPayStatus(Integer userId,long orderNo);
+    ServerResponse queryOrderPayStatus(Integer userId, long orderNo);
+
+     void closeOrder(Integer hour);
 }

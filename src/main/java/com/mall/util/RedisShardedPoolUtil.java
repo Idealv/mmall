@@ -1,5 +1,6 @@
 package com.mall.util;
 
+import com.mall.common.Const;
 import com.mall.common.RedisSharedPool;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.ShardedJedis;
@@ -88,7 +89,6 @@ public class RedisShardedPoolUtil {
     }
 
     public static void main(String[] args) {
-        set("keyTest", "test");
-        expire("keyTest", 60 * 10);
+        setEx("test", "testAAA", Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
     }
 }

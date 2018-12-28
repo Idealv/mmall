@@ -211,5 +211,9 @@
       </foreach>
     </if>
   </select>
-  
+  <select id="getStockByProductId" resultType="integer" parameterType="integer">
+    SELECT stock
+    FROM mmall_product
+    WHERE id=#{productId}
+  </select>
 </mapper>

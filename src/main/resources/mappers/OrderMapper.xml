@@ -223,4 +223,19 @@
     FROM mmall_order
     WHERE order_no=#{orderNo}
   </select>
+  <select id="selectOrderByStatusCreateTime" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM mmall_order
+    WHERE status=#{status}
+    <![CDATA[
+      AND create_time<=#{createTime}
+    ]]>
+    ORDER by create_time DESC
+  </select>
+  <update id="closeOrderByOrderId" parameterType="integer">
+    UPDATE mmall_order
+    SET status=0
+    WHERE id=#{orderId}
+  </update>
 </mapper>

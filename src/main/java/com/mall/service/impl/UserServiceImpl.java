@@ -208,20 +208,4 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createBySuccess(u);
     }
-
-    @Override
-    public ServerResponse checkRole(HttpServletRequest request) {
-        ServerResponse<User> response = checkLogin(request);
-        User user = response.getData();
-        if (response.isSuccess()){
-            if (response.isSuccess()) {
-                if (checkAdminRole(user).isSuccess()) {
-                    return ServerResponse.createBySuccess(user);
-                }else{
-                    return ServerResponse.createByErrorMessage("无权限,请获取管理员权限");
-                }
-            }
-        }
-        return alertNoLogin();
-    }
 }

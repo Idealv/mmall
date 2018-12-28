@@ -7,9 +7,7 @@ import com.mall.service.IProductService;
 import com.mall.vo.ProductDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/product/")
@@ -24,14 +22,29 @@ public class ProductController {
         return iProductService.getProductDetail(productId);
     }
 
-    @RequestMapping("search.do")
+    @RequestMapping(value = "/{productId}",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<PageInfo> search(
-            @RequestParam(value = "keyword",required = false)String keyword,
-            @RequestParam(value = "categoryId",required = false)Integer categoryId,
+    public ServerResponse<ProductDetailVO> detailRESTful(@PathVariable Integer productId){
+        return iProductService.getProductDetail(productId);
+    }
+
+    @RequestMapping("/keyword/{keyword}")
+    @ResponseBody
+    public ServerResponse<PageInfo> searchRESTful(
+            @PathVariable(value = "keyword")String keyword,
             @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,
             @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,
             @RequestParam(value = "orderBy",defaultValue = "") String orderBy){
-        return iProductService.getProductBykeywordCategory(keyword, categoryId, pageNum, pageSize, orderBy);
+        return iProductService.getProductBykeywordCategory(keyword, null, pageNum, pageSize, orderBy);
+    }
+
+    @RequestMapping("/category/{categoryId}")
+    @ResponseBody
+    public ServerResponse<PageInfo> searchRESTful(
+            @PathVariable Integer categoryId,
+            @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "orderBy",defaultValue = "") String orderBy){
+        return iProductService.getProductBykeywordCategory(null, categoryId, pageNum, pageSize, orderBy);
     }
 }

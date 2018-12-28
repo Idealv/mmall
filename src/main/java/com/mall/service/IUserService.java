@@ -19,6 +19,4 @@ public interface IUserService {
     ServerResponse<String> checkAdminRole(User u);
     ServerResponse alertNoLogin();
     ServerResponse checkLogin(HttpServletRequest request);
-    //todo using spring AOP
-    ServerResponse checkRole(HttpServletRequest request);
 }
