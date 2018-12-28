@@ -156,4 +156,8 @@ public class Const {
             return value;
         }
     }
+
+    public interface Redis_Lock{
+        String ORDER_CLOSE_TASK_LOCK = "ORDER_CLOSE_TASK_LOCK";
+    }
 }
