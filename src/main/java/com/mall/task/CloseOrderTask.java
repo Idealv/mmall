@@ -5,6 +5,7 @@ import com.mall.service.IOrderService;
 import com.mall.util.PropertiesUtil;
 import com.mall.util.RedisShardedPoolUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -45,5 +46,32 @@ public class CloseOrderTask {
         iOrderService.closeOrder(hour);
         RedisShardedPoolUtil.del(lockName);
         log.info("释放锁:{},Thread:{}", lockName, Thread.currentThread().getName());
+    }
+
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void closeOrderTaskV3(){
+        log.info("关闭订单定时任务开始");
+        String lockName=Const.Redis_Lock.ORDER_CLOSE_TASK_LOCK;
+        long lockTimeout = Long.parseLong(PropertiesUtil.getPropery("lock.timeout", "5000"));
+        Long setnxResult = RedisShardedPoolUtil.setnx(lockName,
+                String.valueOf(System.currentTimeMillis() + lockTimeout));
+        if (setnxResult!=null&&setnxResult.intValue()==1){
+            closeOrder(Const.Redis_Lock.ORDER_CLOSE_TASK_LOCK);
+        }else {
+            String lockValue = RedisShardedPoolUtil.get(lockName);
+            if (lockValue!=null&&System.currentTimeMillis()>Long.parseLong(lockValue)){
+                //多个tomcat,可能导致值不一致
+                String getSetResult = RedisShardedPoolUtil.getset(lockName,
+                        String.valueOf(System.currentTimeMillis() + lockTimeout));
+                if (getSetResult==null||(getSetResult!=null&& StringUtils.equals(lockValue,getSetResult))){
+                    closeOrder(lockName);
+                }else{
+                    log.info("未能获取到分布式锁:{}",lockName);
+                }
+            }else {
+                log.info("未能获取到分布式锁:{}",lockName);
+            }
+        }
+        log.info("关闭订单定时任务结束");
     }
 }
