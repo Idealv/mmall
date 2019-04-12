@@ -1,0 +1,6 @@
+server:
+  port: 8082
+joe:
+  security:
+    jwt:
+      secret: joe

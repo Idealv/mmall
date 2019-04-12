@@ -1,0 +1,19 @@
+zuul:
+  routes:
+    auth-center:
+      path: /login/**
+      url: http://localhost:8081/
+      sensitiveHeaders: Cookie,Set-Cookie
+      stripPrefix: false
+#    backend-service:
+#      path: /backend/**
+#      url: http://localhost:8082/
+server:
+  port: 9999
+spring:
+  application:
+    name: zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.99.100:8761/eureka/
