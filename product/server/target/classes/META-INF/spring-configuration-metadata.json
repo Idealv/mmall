@@ -1,0 +1,18 @@
+{
+  "groups": [
+    {
+      "name": "product",
+      "type": "com.joe.product.config.ProductProperties",
+      "sourceType": "com.joe.product.config.ProductProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "product.image-host",
+      "type": "java.lang.String",
+      "sourceType": "com.joe.product.config.ProductProperties",
+      "defaultValue": "ftp.server.http.prefix"
+    }
+  ],
+  "hints": []
+}
