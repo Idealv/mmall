@@ -1,4 +1,0 @@
-joe:
-  security:
-    jwt:
-      secret: joe
