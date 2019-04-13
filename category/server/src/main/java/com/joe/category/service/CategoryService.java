@@ -1,4 +1,4 @@
-package com.joe.product.service;
+package com.joe.category.service;
 
 import com.joe.user.common.ServerResponse;
 

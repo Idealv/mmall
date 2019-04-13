@@ -37,6 +37,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.1.4.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.joe.user</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

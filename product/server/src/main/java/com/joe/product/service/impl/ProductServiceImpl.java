@@ -1,11 +1,11 @@
 package com.joe.product.service.impl;
 
 import com.google.common.collect.Lists;
+import com.joe.category.client.CategoryClient;
 import com.joe.product.config.ProductProperties;
 import com.joe.product.domain.Product;
 import com.joe.product.repository.ProductRepository;
 import com.joe.product.repository.predicate.ProductPredicate;
-import com.joe.product.service.CategoryService;
 import com.joe.product.service.ProductService;
 import com.joe.product.vo.ProductDetailVO;
 import com.joe.product.vo.ProductListVO;
@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductProperties productProperties;
     @Autowired
-    private CategoryService categoryService;
+    private CategoryClient categoryClient;
 
     @Override
     public ServerResponse<String> saveOrUpdateProduct(Product product) {
@@ -129,7 +129,8 @@ public class ProductServiceImpl implements ProductService {
     public ServerResponse<Page<ProductListVO>> getProductBykeywordCategory(String keyword, Integer categoryId
             , PageRequest pageRequest) {
         //获取当前种类id以及子种类id列表
-        ServerResponse<List<Integer>> deepCategoryAndChildren = categoryService.getDeepCategoryAndChildren(categoryId);
+        //TODO use categoryClient
+        ServerResponse<List<Integer>> deepCategoryAndChildren = categoryClient.getCategoryIdList(categoryId);
         List<Integer> categoryIdList = Lists.newArrayList();
 
         if (deepCategoryAndChildren.isSuccess()){
