@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>server</module>
-        <module>common</module>
+<!--        <module>common</module>-->
 <!--        <module>client</module>-->
     </modules>
     <parent>

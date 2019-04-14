@@ -8,7 +8,8 @@ import org.hibernate.annotations.Proxy;
 import javax.persistence.*;
 import java.util.Date;
 
-
+//product->category
+//cart->product,user
 @Entity
 @Table(name = "mmall_category")
 @Getter

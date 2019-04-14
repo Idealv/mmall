@@ -26,7 +26,7 @@ public class Product {
      */
     @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "id")
-    private Category category;
+    //private Category category;
     //一个产品对应一个种类,一个种类
 
     private String name;

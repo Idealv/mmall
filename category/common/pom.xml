@@ -2,13 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>category</artifactId>
-        <groupId>com.joe</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+<!--    <parent>-->
+<!--        <artifactId>category</artifactId>-->
+<!--        <groupId>com.joe</groupId>-->
+<!--        <version>0.0.1-SNAPSHOT</version>-->
+<!--    </parent>-->
     <modelVersion>4.0.0</modelVersion>
+    <version>0.0.1-SNAPSHOT</version>
 
     <groupId>com.joe.category</groupId>
     <artifactId>common</artifactId>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <name>Releases</name>
+            <url>http://192.168.99.100:8081/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus</id>
+            <name>Snapshot</name>
+            <url>http://192.168.99.100:8081/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
