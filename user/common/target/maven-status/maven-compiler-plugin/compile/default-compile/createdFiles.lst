@@ -3,4 +3,5 @@ com\joe\user\common\Const.class
 com\joe\user\common\Const$PRODUCT_STATUS.class
 com\joe\user\common\ResponseCode.class
 com\joe\user\common\ServerResponse.class
+com\joe\user\common\advice\GlobalExceptionHandler.class
 com\joe\user\common\Const$Role.class

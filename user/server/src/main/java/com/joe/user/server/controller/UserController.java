@@ -4,7 +4,6 @@ import com.joe.user.common.ServerResponse;
 import com.joe.user.server.domain.User;
 import com.joe.user.server.dto.UserDTO;
 import com.joe.user.server.service.UserService;
-import com.joe.user.server.utils.ParamCheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,10 @@ public class UserController {
 
     @PostMapping("/register")
     public ServerResponse<Object> register(@Valid UserDTO userDTO, BindingResult result) {
-        ServerResponse<Object> checkResponse = ParamCheckUtil.checkParam(result);
-        if (!checkResponse.isSuccess()) {
-            return checkResponse;
-        }
+//        ServerResponse<Object> checkResponse = ParamCheckUtil.checkParam(result);
+//        if (!checkResponse.isSuccess()) {
+//            return checkResponse;
+//        }
         return userService.register(userDTO);
     }
 
@@ -34,10 +33,10 @@ public class UserController {
     public ServerResponse<Object> checkValid(
             @RequestParam @NotNull(message = "检查用户名不能能为空") String val,
             @RequestParam @NotNull(message = "类型不能为空") String type, BindingResult result) {
-        ServerResponse<Object> checkResponse = ParamCheckUtil.checkParam(result);
-        if (!checkResponse.isSuccess()) {
-            return checkResponse;
-        }
+//        ServerResponse<Object> checkResponse = ParamCheckUtil.checkParam(result);
+//        if (!checkResponse.isSuccess()) {
+//            return checkResponse;
+//        }
         return userService.checkValid(val, type);
     }
 

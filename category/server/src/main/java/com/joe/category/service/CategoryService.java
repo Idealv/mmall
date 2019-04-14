@@ -9,11 +9,11 @@ import java.util.Set;
 public interface CategoryService {
     ServerResponse<List<Integer>> getDeepCategoryAndChildren(Integer categoryId);
 
-    ServerResponse<String> addCategory(String categoryName, Integer parentId);
+    ServerResponse<Object> addCategory(String categoryName, Integer parentId);
 
-    ServerResponse<String> updateCategoryName(String categoryName, Integer categoryId);
+    ServerResponse<Object> updateCategoryName(String categoryName, Integer categoryId);
 
     ServerResponse<List<Category>> getChildrenParallelCategory(Integer parentId);
 
-    Set<Category> findChildCategory(Set<Category> categorySet, Integer categoryId);
+    Set<Category> getChildrenCategory(Set<Category> categorySet, Integer parentCategoryId);
 }
