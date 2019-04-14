@@ -38,6 +38,29 @@ public class CategoryServiceImpl implements CategoryService {
         return ServerResponse.createBySuccess(categoryIdList);
     }
 
+    @Override
+    public ServerResponse<String> addCategory(String categoryName, Integer parentId) {
+        Category category = new Category();
+
+
+        return null;
+    }
+
+    @Override
+    public ServerResponse<String> updateCategoryName(String categoryName, Integer categoryId) {
+        return null;
+    }
+
+    @Override
+    public ServerResponse<List<Category>> getChildrenParallelCategory(Integer parentId) {
+        return null;
+    }
+
+    @Override
+    public Set<Category> findChildCategory(Set<Category> categorySet, Integer categoryId) {
+        return null;
+    }
+
     private Set<Category> getChildrenCategory(Set<Category> categorySet, Integer parentCategoryId) {
         Category parent = categoryRepository.getOne(parentCategoryId);
         if (parent!=null){
