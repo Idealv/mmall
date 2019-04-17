@@ -14,7 +14,7 @@ public class ProductPredicate {
             builder.and(product.name.like(productName));
         }
         if (categoryIdList!=null&&categoryIdList.size()>0){
-            builder.and(product.category.id.in(categoryIdList));
+            builder.and(product.categoryId.in(categoryIdList));
         }
         return builder;
     }

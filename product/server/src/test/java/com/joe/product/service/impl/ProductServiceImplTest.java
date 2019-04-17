@@ -16,7 +16,7 @@ public class ProductServiceImplTest extends ProductApplicationTests {
     public void testDeepCopy() throws Exception {
         Product product = productRepository.getOne(26);
         ProductDetailVO productDetailVO = new ProductDetailVO();
-        productDetailVO.setCategoryId(product.getCategory().getId());
+        productDetailVO.setCategoryId(product.getCategoryId());
         BeanUtils.copyProperties(product, productDetailVO);
         System.out.println(productDetailVO);
     }

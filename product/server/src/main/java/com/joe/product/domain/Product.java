@@ -24,10 +24,13 @@ public class Product {
     /**
      * 分类id
      */
-    @ManyToOne
-    @JoinColumn(name = "category_id",referencedColumnName = "id")
+    //@ManyToOne
+    //@JoinColumn(name = "category_id",referencedColumnName = "id")
     //private Category category;
     //一个产品对应一个种类,一个种类
+    @Column(name = "category_id")
+    private Integer categoryId;
+
 
     private String name;
 

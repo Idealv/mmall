@@ -169,12 +169,13 @@ public class ProductServiceImpl implements ProductService {
         productDetailVO.setImageHost(productProperties.getImageHost());
         productDetailVO.setUpdateTime(new Date());
         //设置父类id
+        Integer parentCategoryId=product.getCategoryId();
 //        Integer parentCategoryId = product.getCategory().getParentCategory().getId();
-//        if (parentCategoryId != null) {
-//            productDetailVO.setParentCategoryId(parentCategoryId);
-//        } else {
-//            productDetailVO.setParentCategoryId(0);
-//        }
+        if (parentCategoryId != null) {
+            productDetailVO.setParentCategoryId(parentCategoryId);
+        } else {
+            productDetailVO.setParentCategoryId(0);
+        }
 
         return productDetailVO;
     }
@@ -186,7 +187,7 @@ public class ProductServiceImpl implements ProductService {
         BeanUtils.copyProperties(product, productListVO);
 
         //productListVO.setCategoryId(product.getCategory().getId());
-
+        productListVO.setCategoryId(product.getCategoryId());
         return productListVO;
     }
 }
